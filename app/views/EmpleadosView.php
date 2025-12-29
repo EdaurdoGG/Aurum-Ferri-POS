@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Empleados | Aurum Ferri</title>
-    <link rel="stylesheet" href="assets/css/Empleados.css">
-    <link rel="icon" href="assets/icons/Logo.png">
+<meta charset="UTF-8">
+<title>Empleados | Aurum Ferri</title>
+<link rel="stylesheet" href="assets/css/Empleados.css">
+<link rel="icon" href="assets/icons/Logo.png">
 </head>
 <body>
 
@@ -34,9 +34,10 @@
             <?php if ($notificacionesNoLeidas > 0): ?>
                 <span class="badge"><?= $notificacionesNoLeidas > 9 ? '9+' : $notificacionesNoLeidas ?></span>
             <?php endif; ?>
-            <img src="assets/icons/Campana.png" alt="Notificaciones">
+            <img src="assets/icons/Campana.png">
         </a>
-        <img src="<?= htmlspecialchars($fotoUsuario) ?>" class="user-avatar" alt="Usuario">
+
+        <img src="<?= htmlspecialchars($fotoUsuario) ?>" class="user-avatar">
         <div class="user-info">
             <strong><?= htmlspecialchars($nombreUsuario) ?></strong>
             <span><?= htmlspecialchars($rolUsuarioNombre) ?></span>
@@ -47,44 +48,56 @@
 <div class="divider"></div>
 
 <main class="contenido">
-    <section class="acciones-barra">
-        <a href="Registro.php" class="accion-btn primero"><img src="assets/icons/Agregar.png"> Nuevo</a>
-        <a href="#" class="accion-btn segundo" onclick="descargarEmpleados()"><img src="assets/icons/Descargar.png"> Descargar</a>
-    </section>
+<section class="acciones-barra">
+    <a href="Registro.php" class="accion-btn primero">
+        <img src="assets/icons/Agregar.png"> Nuevo
+    </a>
+    <a href="#" class="accion-btn segundo" onclick="descargarEmpleados()">
+        <img src="assets/icons/Descargar.png"> Descargar
+    </a>
+</section>
 
-    <section class="cards-container">
-        <?php while ($e = $empleados->fetch_assoc()):
-            $estatus = $e['Estatus'] ?? 'Inactivo';
-            $claseEstatus = strtolower($estatus) === 'activo' ? 'estatus-activo' : 'estatus-inactivo';
+<section class="cards-container">
+<?php while ($e = $empleados->fetch_assoc()):
+    $estatus = $e['Estatus'] ?? 'Inactivo';
+    $claseEstatus = strtolower($estatus) === 'activo'
+        ? 'estatus-activo'
+        : 'estatus-inactivo';
 
-            // -------------------------------
-            // Imagen como en Inventario
-            // -------------------------------
-            $nombreImagen = $e['Imagen'] ?? '';
-            $rutaImagen = (!empty($nombreImagen) && file_exists($rutaServidor . basename($nombreImagen)))
-                ? $rutaWeb . basename($nombreImagen)
-                : $rutaWeb . 'default.png';
-        ?>
-        <div class="card" data-estatus="<?= htmlspecialchars($estatus) ?>">
-            <span class="estatus <?= $claseEstatus ?>"><?= htmlspecialchars($estatus) ?></span>
-            <img src="<?= htmlspecialchars($rutaImagen) ?>" class="avatar" alt="Empleado">
-            <div class="card-info">
-                <h3><?= htmlspecialchars($e['Nombre'].' '.$e['Paterno'].' '.$e['Materno']) ?></h3>
-                <p class="rol"><?= htmlspecialchars($e['Rol']) ?></p>
-                <p>📞 <?= htmlspecialchars($e['Telefono'] ?? 'Sin teléfono') ?></p>
-                <p>👤 <?= htmlspecialchars($e['Usuario'] ?? 'Sin usuario') ?></p>
-            </div>
-            <div class="card-actions">
-                <a href="EditarEmpleado.php?idUsuario=<?= $e['idUsuario'] ?>" class="edit"><img src="assets/icons/Editar.png"></a>
-                <a href="BorrarEmpleado.php?idUsuario=<?= $e['idUsuario'] ?>" class="delete" onclick="return confirm('¿Eliminar empleado?')"><img src="assets/icons/Borrar.png"></a>
-            </div>
-        </div>
-        <?php endwhile; ?>
-    </section>
+    $nombreImagen = $e['Imagen'] ?? '';
+    $rutaImagen = (!empty($nombreImagen) && file_exists($rutaServidor.basename($nombreImagen)))
+        ? $rutaWeb.basename($nombreImagen)
+        : $rutaWeb.'default.png';
+?>
+<div class="card" data-estatus="<?= htmlspecialchars($estatus) ?>">
+    <span class="estatus <?= $claseEstatus ?>"><?= htmlspecialchars($estatus) ?></span>
+
+    <img src="<?= htmlspecialchars($rutaImagen) ?>" class="avatar">
+
+    <div class="card-info">
+        <h3><?= htmlspecialchars($e['Nombre'].' '.$e['Paterno'].' '.$e['Materno']) ?></h3>
+        <p class="rol"><?= htmlspecialchars($e['Rol']) ?></p>
+        <p>📞 <?= htmlspecialchars($e['Telefono'] ?? 'Sin teléfono') ?></p>
+        <p>👤 <?= htmlspecialchars($e['Usuario'] ?? 'Sin usuario') ?></p>
+    </div>
+
+    <div class="card-actions">
+        <a href="EditarEmpleado.php?idUsuario=<?= $e['idUsuario'] ?>" class="edit">
+            <img src="assets/icons/Editar.png">
+        </a>
+        <a href="BorrarEmpleado.php?idUsuario=<?= $e['idUsuario'] ?>"
+           class="delete"
+           onclick="return confirm('¿Eliminar empleado?')">
+            <img src="assets/icons/Borrar.png">
+        </a>
+    </div>
+</div>
+<?php endwhile; ?>
+</section>
 </main>
 
 <footer>
-    <p>&copy; 2025 Diamonds Corporation. Todos los derechos reservados.</p>
+<p>&copy; 2025 Diamonds Corporation. Todos los derechos reservados.</p>
 </footer>
 
 <script>
@@ -92,9 +105,10 @@ document.getElementById("btnMenu").onclick = () => {
     document.getElementById("menuLateral").classList.toggle("menu-activo");
 };
 
-function descargarEmpleados() {
+function descargarEmpleados(){
     window.location.href = 'TicketEmpleados.php';
 }
 </script>
+
 </body>
 </html>

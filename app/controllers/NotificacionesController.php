@@ -4,25 +4,27 @@ require_once __DIR__ . '/../config/session.php';
 requireRole(1);
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/NotificacionesModel.php';
 
 /* ================= USUARIO ================= */
-$idUsuario = $_SESSION['id'];
-$nombreUsuario = $_SESSION['nombre_completo'] ?? 'Administrador';
+$idUsuario        = $_SESSION['id'];
+$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Administrador';
 $rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
 
-/* ================= MARCAR COMO LEÍDA ================= */
+/* ================= MODEL ================= */
+$model = new NotificacionesModel($conn);
+
+/* ================= ACCIÓN: MARCAR LEÍDA ================= */
 if (isset($_GET['leer'])) {
-    $id = intval($_GET['leer']);
-    $conn->query("UPDATE Notificaciones SET Leida = 1 WHERE idNotificacion = $id");
+    $id = (int)$_GET['leer'];
+    $model->marcarComoLeida($id);
     header("Location: Notificaciones.php");
     exit();
 }
 
-/* ================= CONSULTA ================= */
-$sql = "SELECT * FROM VistaNotificaciones ORDER BY Fecha DESC";
-$resultado = $conn->query($sql);
+/* ================= DATOS ================= */
+$resultado = $model->obtenerNotificaciones();
 
-/* ================= VISTA ================= */
+/* ================= VIEW ================= */
 require_once __DIR__ . '/../views/NotificacionesView.php';
-?>

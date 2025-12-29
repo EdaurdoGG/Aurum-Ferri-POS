@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/css/EditarCategoria.css">
     <link rel="icon" href="assets/icons/Logo.png">
 </head>
+
 <body>
 
 <main>
@@ -14,7 +15,7 @@
 <div class="login">
 
 <?php if (!empty($_SESSION['mensaje'])): ?>
-<div class="alert-message <?= $_SESSION['tipo_mensaje']=='error'?'alert-error':'alert-success' ?>">
+<div class="alert-message <?= $_SESSION['tipo_mensaje']==='error'?'alert-error':'alert-success' ?>">
     <?= htmlspecialchars($_SESSION['mensaje']) ?>
 </div>
 <?php unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']); ?>
@@ -26,13 +27,16 @@
     <h2>Editar Categoría</h2>
     <img src="assets/icons/Volver.png"
          class="boton-atras"
-         onclick="window.location.href='../public/Categorias.php';">
+         onclick="window.location.href='Categorias.php';">
 </div>
 
-<input type="hidden" name="idCategoria" value="<?= $idCategoria ?>">
+<input type="hidden" name="idCategoria" value="<?= (int)$categoria['idCategoria'] ?>">
 
 <div class="input-group">
-    <input type="text" name="Nombre" required placeholder=" "
+    <input type="text"
+           name="Nombre"
+           required
+           placeholder=" "
            value="<?= htmlspecialchars($categoria['Nombre']) ?>">
     <label>Nombre de la categoría</label>
 </div>

@@ -43,7 +43,7 @@
 
 <main class="contenido">
 
-<?php if($mensaje): ?>
+<?php if ($mensaje): ?>
 <div class="alert-message alert-<?= $tipoMensaje ?>">
     <?= htmlspecialchars($mensaje) ?>
 </div>
@@ -51,25 +51,7 @@
 
 <section class="cards-container">
 
-<?php
-// ================= RUTAS DE IMAGENES =================
-$rutaServidor = __DIR__ . '/../../public/Imagenes/Clientes/';
-$rutaWeb = 'Imagenes/Clientes/';
-if (!is_dir($rutaServidor)) mkdir($rutaServidor, 0755, true);
-
-foreach($clientes as $c):
-
-    $estatusClase = strtolower($c['Estatus']) === 'activo'
-        ? 'estatus-activo'
-        : 'estatus-inactivo';
-
-    $nombreImagen = $c['Imagen'] ?? '';
-    if (!empty($nombreImagen) && file_exists($rutaServidor . basename($nombreImagen))) {
-        $rutaImagen = $rutaWeb . basename($nombreImagen);
-    } else {
-        $rutaImagen = $rutaWeb . 'default.png';
-    }
-?>
+<?php foreach ($clientes as $c): ?>
 
 <div class="card"
      onclick="abrirModal(
@@ -78,11 +60,11 @@ foreach($clientes as $c):
         <?= $c['Credito'] ?>
      )">
 
-    <span class="estatus <?= $estatusClase ?>">
+    <span class="estatus <?= $c['estatusClase'] ?>">
         <?= htmlspecialchars($c['Estatus']) ?>
     </span>
 
-    <img src="<?= htmlspecialchars($rutaImagen) ?>" class="avatar">
+    <img src="<?= htmlspecialchars($c['rutaImagen']) ?>" class="avatar">
 
     <div class="card-info">
         <h3><?= htmlspecialchars($c['Nombre'].' '.$c['Paterno'].' '.$c['Materno']) ?></h3>
@@ -107,7 +89,7 @@ foreach($clientes as $c):
 
         <form method="POST">
             <input type="hidden" name="idCliente" id="modalIdCliente">
-            <input type="number" step="0.01" min="0.01" name="monto" placeholder="Monto a abonar" required>
+            <input type="number" step="0.01" min="0.01" name="monto" required>
             <div class="modal-actions">
                 <button type="button" class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
                 <button type="submit" name="abonar" class="btn-guardar">Registrar</button>

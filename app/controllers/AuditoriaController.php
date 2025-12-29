@@ -1,61 +1,41 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/session.php';
 requireRole(1);
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/AuditoriaModel.php';
 
 /* ================= USUARIO ================= */
-$idUsuario = $_SESSION['id'];
-$nombreUsuario = $_SESSION['nombre_completo'] ?? 'Administrador';
+$idUsuario        = $_SESSION['id'];
+$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Administrador';
 $rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
 
-/* ================= VARIABLE PARA TRIGGERS ================= */
+/* ================= TRIGGERS ================= */
 $conn->query("SET @usuario_actual = $idUsuario;");
-
-/* ================= NOTIFICACIONES NO LEÍDAS ================= */
-$consultaNoti = $conn->query("SELECT COUNT(*) AS total FROM Notificaciones WHERE Leida = 0");
-$notificacionesNoLeidas = $consultaNoti->fetch_assoc()['total'] ?? 0;
 
 /* ================= FILTROS ================= */
 $fecha  = $_GET['fecha']  ?? '';
 $modulo = $_GET['modulo'] ?? '';
 
-/* ================= CONSULTA ================= */
-$sql = "SELECT * FROM VistaAuditoria WHERE 1=1";
-$params = [];
-$tipos = "";
+/* ================= MODEL ================= */
+$model = new AuditoriaModel($conn);
 
-if (!empty($fecha)) {
-    $sql .= " AND DATE(Fecha) = ?";
-    $params[] = $fecha;
-    $tipos .= "s";
-}
-
-if (!empty($modulo)) {
-    $sql .= " AND Tabla = ?";
-    $params[] = $modulo;
-    $tipos .= "s";
-}
-
-$sql .= " ORDER BY Fecha DESC";
-$stmt = $conn->prepare($sql);
-
-if (!empty($params)) {
-    $stmt->bind_param($tipos, ...$params);
-}
-
-$stmt->execute();
-$resultado = $stmt->get_result();
+/* ================= DATOS ================= */
+$resultado = $model->obtenerAuditoria($fecha, $modulo);
+$notificacionesNoLeidas = $model->contarNotificacionesNoLeidas();
 
 /* ================= DESCARGA CSV ================= */
 if (isset($_GET['descargar']) && $_GET['descargar'] === '1') {
+
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename=auditoria.csv');
 
     $out = fopen('php://output', 'w');
-    fputcsv($out, ['Acción','Tabla','Columna','Dato Anterior','Dato Nuevo','ID','Usuario','Fecha','Hora']);
+    fputcsv($out, [
+        'Acción','Tabla','Columna','Dato Anterior',
+        'Dato Nuevo','ID','Usuario','Fecha','Hora'
+    ]);
 
     while ($f = $resultado->fetch_assoc()) {
         fputcsv($out, [
@@ -74,4 +54,4 @@ if (isset($_GET['descargar']) && $_GET['descargar'] === '1') {
 }
 
 /* ================= VISTA ================= */
-require_once __DIR__ . '/../views/AuditoriaView.php';
+require __DIR__ . '/../views/AuditoriaView.php';

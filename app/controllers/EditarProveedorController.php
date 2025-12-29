@@ -3,17 +3,17 @@ require_once __DIR__ . '/../config/session.php';
 requireRole(1);
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../queries/EditarProveedores.php';
+require_once __DIR__ . '/../models/EditarProveedorModel.php';
 
 /* MENSAJES */
-function setMensaje($texto, $tipo = 'success') {
-    $_SESSION['mensaje'] = $texto;
-    $_SESSION['tipo_mensaje'] = $tipo;
+function setMensaje(string $msg, string $tipo='success'){
+    $_SESSION['mensaje']=$msg;
+    $_SESSION['tipo_mensaje']=$tipo;
 }
 
-/* USUARIO */
-$idUsuario = $_SESSION['id'];
-$conn->query("SET @usuario_actual = $idUsuario;");
+/* USUARIO AUDITORÍA */
+$idUsuarioSesion = $_SESSION['id'];
+$conn->query("SET @usuario_actual = $idUsuarioSesion");
 
 /* VALIDAR ID */
 $idProveedor = (int)($_GET['idProveedor'] ?? 0);
@@ -22,12 +22,12 @@ if ($idProveedor <= 0) {
     exit;
 }
 
-/* RUTA IMÁGENES */
-$rutaImagenes = $_SERVER['DOCUMENT_ROOT'] . "/Herreria/public/Imagenes/Proveedores/";
-if (!is_dir($rutaImagenes)) mkdir($rutaImagenes, 0755, true);
+/* MODEL */
+$model = new ProveedorModel($conn);
 
-/* LIMPIAR MENSAJES ANTERIORES */
-unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
+/* RUTA IMÁGENES */
+$rutaImagenes = $_SERVER['DOCUMENT_ROOT']."/Herreria/public/Imagenes/Proveedores/";
+if (!is_dir($rutaImagenes)) mkdir($rutaImagenes, 0775, true);
 
 /* POST */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -39,23 +39,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['Email']);
     $estatusPersona  = $_POST['EstatusPersona'];
     $estadoProveedor = $_POST['EstadoProveedor'];
+    $imagen = $_POST['ImagenActual'] ?? null;
 
     if ($nombre === '') {
         setMensaje("El nombre es obligatorio", "error");
     }
 
-    /* IMAGEN */
-    $imagen = $_POST['ImagenActual'] ?? null;
+    /* SUBIR IMAGEN */
     if (!empty($_FILES['Imagen']['tmp_name'])) {
-        $fileName = time() . "_" . basename($_FILES['Imagen']['name']);
-        if (move_uploaded_file($_FILES['Imagen']['tmp_name'], $rutaImagenes . $fileName)) {
-            $imagen = "Imagenes/Proveedores/" . $fileName;
+        $ext = strtolower(pathinfo($_FILES['Imagen']['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg','jpeg','png','gif'])) {
+            setMensaje("Formato de imagen no permitido", "error");
+        } else {
+            $nombreImg = uniqid().".".$ext;
+            move_uploaded_file($_FILES['Imagen']['tmp_name'], $rutaImagenes.$nombreImg);
+            $imagen = "Imagenes/Proveedores/".$nombreImg;
         }
     }
 
-    if (!isset($_SESSION['mensaje'])) {
-        editarProveedor(
-            $conn,
+    if (!isset($_SESSION['tipo_mensaje'])) {
+        $model->editarProveedor(
             $idProveedor,
             $nombre,
             $paterno,
@@ -74,7 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 /* CARGAR DATOS */
-$proveedor = obtenerProveedorPorId($conn, $idProveedor);
+$proveedor = $model->obtenerProveedorPorId($idProveedor);
+if (!$proveedor) {
+    setMensaje("Proveedor no encontrado","error");
+    header("Location: Proveedores.php");
+    exit;
+}
 
 require_once __DIR__ . '/../views/EditarProveedorView.php';
-?>

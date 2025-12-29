@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Agregar Proveedor</title>
+    <title>Agregar Proveedor | Aurum Ferri</title>
+
     <link rel="stylesheet" href="assets/css/AgregarProveedor.css">
     <link rel="icon" href="assets/icons/Logo.png">
 </head>
@@ -13,12 +14,11 @@
 <div class="log">
 <div class="login">
 
-<!-- ================= MENSAJE FLOTANTE ================= -->
 <?php if (!empty($_SESSION['mensaje'])): ?>
-    <div class="alert-message <?= $_SESSION['tipo_mensaje']=='error' ? 'alert-error' : 'alert-success' ?>">
+    <div class="alert-message <?= $_SESSION['tipo_mensaje']==='error' ? 'alert-error' : 'alert-success' ?>">
         <?= htmlspecialchars($_SESSION['mensaje']) ?>
     </div>
-    <?php unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']); ?>
+<?php unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']); ?>
 <?php endif; ?>
 
 <form method="POST" enctype="multipart/form-data">
@@ -60,7 +60,7 @@
     <label>Subir Imagen (opcional)</label>
 </div>
 
-<button type="submit" name="AgregarProveedor" class="Acceder">
+<button type="submit" class="Acceder">
     Agregar Proveedor
 </button>
 

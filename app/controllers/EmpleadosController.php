@@ -10,26 +10,30 @@ requireRole(1);
 
 // ================= BASE DE DATOS =================
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../queries/empleados.php';
+
+// ================= MODEL =================
+require_once __DIR__ . '/../models/EmpleadoModel.php';
 
 // ================= USUARIO =================
 $idUsuario = $_SESSION['id'];
-$nombreUsuario = $_SESSION['nombre_completo'] ?? 'Administrador';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$nombreUsuario   = $_SESSION['nombre_completo'] ?? 'Administrador';
+$rolUsuarioNombre= $_SESSION['rol_nombre'] ?? 'Administrador';
+$fotoUsuario     = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
 
 // ================= TRIGGERS =================
 $conn->query("SET @usuario_actual = $idUsuario;");
 
-// ================= NOTIFICACIONES =================
-$notificacionesNoLeidas = obtenerNotificacionesNoLeidas($conn);
+// ================= MODEL =================
+$model = new EmpleadoModel($conn);
 
-// ================= EMPLEADOS =================
-$empleados = obtenerEmpleados($conn);
+// ================= DATOS =================
+$notificacionesNoLeidas = $model->obtenerNotificacionesNoLeidas();
+$empleados = $model->obtenerEmpleados();
 
-// ================= RUTAS DE IMAGENES =================
+// ================= RUTAS IMÁGENES =================
 $rutaServidor = __DIR__ . '/../../public/Imagenes/Usuarios/';
 $rutaWeb = 'Imagenes/Usuarios/';
 if (!is_dir($rutaServidor)) mkdir($rutaServidor, 0755, true);
 
-?>
+// ================= VIEW =================
+require_once __DIR__ . '/../views/EmpleadosView.php';

@@ -1,9 +1,11 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/../config/session.php';
-requireRole(2); // Solo cajeros
+requireRole(2);
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/InicioCajerosModel.php';
 
 /* ================= USUARIO ================= */
 $idUsuario = $_SESSION['id'];
@@ -11,85 +13,76 @@ $nombreUsuario = $_SESSION['nombre_completo'] ?? 'Cajero';
 $rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Cajero';
 $fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
 
-/* ================= VARIABLE PARA TRIGGERS ================= */
-$conn->query("SET @usuario_actual = $idUsuario;");
-
-/* ================= NOTIFICACIONES NO LEÍDAS ================= */
-$consultaNoti = $conn->query("SELECT COUNT(*) AS total FROM Notificaciones WHERE Leida = 0");
-$notificacionesNoLeidas = $consultaNoti->fetch_assoc()['total'] ?? 0;
+/* ================= TRIGGERS ================= */
+$conn->query("SET @usuario_actual = $idUsuario");
 
 /* ================= MENSAJES ================= */
-function setMensaje($texto, $tipo = 'success') {
+function setMensaje($texto, $tipo='success') {
     $_SESSION['mensaje'] = $texto;
     $_SESSION['tipo_mensaje'] = $tipo;
 }
 
-/* ================= OBTENER / CREAR CARRITO ================= */
-$idCarrito = null;
-$stmt = $conn->prepare("SELECT idCarrito FROM Carrito WHERE idUsuario=? ORDER BY Fecha DESC LIMIT 1");
-$stmt->bind_param("i", $idUsuario);
-$stmt->execute();
-$res = $stmt->get_result();
-if ($row = $res->fetch_assoc()) $idCarrito = $row['idCarrito'];
-$stmt->close();
-$conn->next_result();
+/* ================= MODEL ================= */
+$model = new VentaCajeroModel($conn);
 
-if (!$idCarrito) {
-    $stmt = $conn->prepare("INSERT INTO Carrito (idUsuario) VALUES (?)");
-    $stmt->bind_param("i", $idUsuario);
-    $stmt->execute();
-    $idCarrito = $stmt->insert_id;
-    $stmt->close();
-}
+/* ================= DATOS ================= */
+$clientes = $model->obtenerClientesActivos();
+$idCarrito = $model->obtenerOCrearCarrito($idUsuario);
+$productos_registrados = $model->obtenerCarritoUsuario($idUsuario);
 
-/* ================= CLIENTES ================= */
-$clientes = [];
-$res = $conn->query("
-    SELECT c.idCliente id, CONCAT(p.Nombre,' ',p.Paterno,' ',p.Materno) Nombre
-    FROM Clientes c
-    JOIN Personas p ON p.idPersona=c.idPersona
-    WHERE p.Estatus='Activo'
-");
-if ($res) $clientes = $res->fetch_all(MYSQLI_ASSOC);
-
-/* ================= CLIENTE SELECCIONADO ================= */
+/* ================= CLIENTE ================= */
 $cliente_id = $_POST['cliente_id'] ?? $_SESSION['cliente_id_seleccionado'] ?? 1;
 $_SESSION['cliente_id_seleccionado'] = $cliente_id;
 $venta_credito = isset($_POST['venta_credito']) ? 1 : 0;
 
-/* ================= AGREGAR PRODUCTO ================= */
-if (!empty($_POST['termino'])) {
-    require_once __DIR__ . '/../helpers/AgregarProductoCajeros.php';
-    exit();
-}
+/* ================= ACCIONES ================= */
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-/* ================= SUMAR / RESTAR ================= */
-if (isset($_POST['sumar']) || isset($_POST['restar'])) {
-    require_once __DIR__ . '/../helpers/ModificarCantidadCajeros.php';
-    exit();
-}
+    if (!empty($_POST['termino'])) {
+        $producto = $model->buscarProducto(trim($_POST['termino']));
+        if ($producto && $model->agregarProducto($idCarrito, $producto['idProducto'])) {
+            setMensaje("Producto agregado al carrito");
+        } else {
+            setMensaje("Producto no encontrado o sin stock", "error");
+        }
+        header("Location: InicioTrabajadores.php");
+        exit();
+    }
 
-/* ================= ACTUALIZAR CANTIDAD ================= */
-if (isset($_POST['actualizar'])) {
-    require_once __DIR__ . '/../helpers/ActualizarCantidadCajeros.php';
-    exit();
-}
+    if (isset($_POST['actualizar'])) {
+        $ok = $model->actualizarCantidad(
+            $idCarrito,
+            (int)$_POST['producto_id'],
+            max(0, (int)$_POST['cantidad'])
+        );
+        setMensaje($ok ? "Cantidad actualizada" : "Stock insuficiente", $ok?'success':'error');
+        header("Location: InicioTrabajadores.php");
+        exit();
+    }
 
-/* ================= PROCESAR VENTA ================= */
-if (isset($_POST['procesar'])) {
-    require_once __DIR__ . '/../helpers/ProcesarVentaCajeros.php';
-    exit();
-}
+    if (isset($_POST['sumar'])) {
+        $model->sumarCantidad($idCarrito, (int)$_POST['producto_id']);
+        header("Location: InicioTrabajadores.php");
+        exit();
+    }
 
-/* ================= CARRITO ================= */
-$productos_registrados = [];
-$stmt = $conn->prepare("CALL ObtenerCarritoUsuario(?)");
-$stmt->bind_param("i", $idUsuario);
-$stmt->execute();
-$res = $stmt->get_result();
-while ($r = $res->fetch_assoc()) $productos_registrados[] = $r;
-$stmt->close(); $conn->next_result();
+    if (isset($_POST['restar'])) {
+        $model->restarCantidad($idCarrito, (int)$_POST['producto_id']);
+        header("Location: InicioTrabajadores.php");
+        exit();
+    }
+
+    if (isset($_POST['procesar'])) {
+        if ($model->procesarVenta($idUsuario, $cliente_id, $venta_credito)) {
+            setMensaje("Venta procesada correctamente");
+            unset($_SESSION['cliente_id_seleccionado']);
+        } else {
+            setMensaje("No se pudo procesar la venta", "error");
+        }
+        header("Location: InicioTrabajadores.php");
+        exit();
+    }
+}
 
 /* ================= VISTA ================= */
 require_once __DIR__ . '/../views/InicioCajerosView.php';
-?>

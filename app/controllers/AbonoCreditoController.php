@@ -1,13 +1,13 @@
 <?php
 
 require_once __DIR__ . '/../config/session.php';
-requireRole(1); // solo cajero
+requireRole(1); // Administrador
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../queries/abonos.php';
+require_once __DIR__ . '/../models/AbonoCreditoModel.php';
 
 /* ================= USUARIO ================= */
-$idUsuario = $_SESSION['id']; // Ya sabemos que existe
+$idUsuario = $_SESSION['id'];
 $nombreUsuario = $_SESSION['nombre_completo'] ?? 'Administrador';
 $rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
 $fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
@@ -15,37 +15,32 @@ $fotoUsuario = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
 /* ================= VARIABLE PARA TRIGGERS ================= */
 $conn->query("SET @usuario_actual = $idUsuario;");
 
+/* ================= MODEL ================= */
+$model = new AbonoCreditoModel($conn);
+
 /* ================= MENSAJES ================= */
 $mensaje = $tipoMensaje = null;
 
 /* ================= PROCESAR ABONO ================= */
-if (isset($_POST['abonar'])) {
-    $idCliente = intval($_POST['idCliente']);
-    $monto     = floatval($_POST['monto']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['abonar'])) {
 
-    $stmt = $conn->prepare("CALL RegistrarAbonoCredito(?, ?, ?)");
-    $stmt->bind_param("iid", $idUsuario, $idCliente, $monto);
+    $idCliente = (int) $_POST['idCliente'];
+    $monto     = (float) $_POST['monto'];
 
-    if ($stmt->execute()) {
+    if ($monto <= 0) {
+        $mensaje = "El monto debe ser mayor a 0.";
+        $tipoMensaje = "error";
+    } elseif ($model->registrarAbono($idUsuario, $idCliente, $monto)) {
         $mensaje = "Abono registrado correctamente.";
         $tipoMensaje = "success";
     } else {
         $mensaje = "Error al registrar el abono.";
         $tipoMensaje = "error";
     }
-    $stmt->close();
-    $conn->next_result();
 }
 
-/* ================= CLIENTES CON CRÉDITO ================= */
-$clientes = [];
-$res = $conn->query("
-    SELECT *
-    FROM VistaClientes
-    WHERE Credito > 0
-    ORDER BY Nombre
-");
-if ($res) {
-    $clientes = $res->fetch_all(MYSQLI_ASSOC);
-}
-?>
+/* ================= DATOS ================= */
+$clientes = $model->obtenerClientesConCredito();
+
+/* ================= CARGAR VISTA ================= */
+require __DIR__ . '/../views/AbonoCreditoView.php';

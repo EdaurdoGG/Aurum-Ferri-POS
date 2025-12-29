@@ -44,7 +44,6 @@
 <div class="divider"></div>
 
 <main class="contenido">
-
 <section class="notificaciones-grid">
 
 <?php if ($resultado->num_rows > 0): ?>
@@ -89,7 +88,6 @@
 <?php endif; ?>
 
 </section>
-
 </main>
 
 <footer>
