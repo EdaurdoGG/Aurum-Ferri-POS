@@ -1,0 +1,239 @@
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: sans-serif;
+}
+
+body {
+    background-image: url('Imagenes/Fondo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 135px;
+    width: 100%;
+    position: relative;
+}
+
+.centro {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.log {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.login {
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.75);
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 40px;
+    box-shadow: 0 0 20px rgb(255, 255, 255);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.titulo h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: white;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.input-group input, .input-group select, .input-group textarea {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    color: black;
+    background-color: white;
+}
+
+.input-group label {
+    position: absolute;
+    left: 20px;
+    top: 12px;
+    color: gray;
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.2s ease all;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label,
+.input-group select:focus + label,
+.input-group select:not(:placeholder-shown) + label,
+.input-group textarea:focus + label,
+.input-group textarea:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 15px;
+    font-size: 12px;
+    color: white;
+    background-color: black;
+    padding: 0 5px;
+    border-radius: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 40px;
+    border: none;
+    background-color: #2B0001;
+    color: white;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background-color: #450002;
+}
+
+footer {
+    color: white;
+    text-align: center;
+    padding: 10px;
+    background-color: transparent;
+    font-size: 14px;
+    width: 100%;
+    margin-top: auto;
+}
+
+/* Botón para mostrar el menú */
+.btn-atras-contenedor {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-left: 20px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+}
+
+.btn-atras-contenedor img {
+    width: 100%;
+    height: auto;
+}
+
+.btn-atras-contenedor:hover {
+    transform: scale(1.2);
+}
+
+/* MENÚ lateral */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    left: -200px;
+    width: 200px;
+    height: 100vh;
+    background-color: #2B0001;
+    padding-top: 20px;
+    border-radius: 0 5px 5px 0;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 10;
+    transition: left 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+/* Mostrar el menú cuando el cursor se acerque al área del botón o al menú lateral */
+.btn-atras-contenedor:hover + .menu-lateral,
+.menu-lateral:hover {
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Ocultar el botón cuando el menú está visible */
+.menu-lateral:hover + .btn-atras-contenedor {
+    visibility: hidden;
+}
+
+/* Contenedor del título y la imagen en el menú lateral */
+.menu-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 10px;
+    border-bottom: 2px solid #ccc;
+}
+
+/* Estilo para la imagen del menú */
+.menu-logo {
+    width: 30px;
+    height: 30px;
+}
+
+/* Estilo para el título del menú */
+.menu-titulo {
+    font-size: 20px;
+    color: white;
+    margin: 0;
+}
+
+/* Lista del menú */
+.menu-lateral .menu-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-lateral li {
+    margin: 20px 0;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.menu-lateral li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.menu-lateral li a img {
+    width: 20px;
+    height: 20px;
+}
+
+.menu-lateral li a:hover {
+    font-size: 20px;
+    transform: scale(1.05);
+}

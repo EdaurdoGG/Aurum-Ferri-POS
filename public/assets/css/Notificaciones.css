@@ -1,0 +1,96 @@
+@import url('Auditoria.css');
+
+/* ================= GRID ================= */
+.notificaciones-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap:22px;
+}
+
+/* ================= CARD ================= */
+.notificacion-card{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(11,29,58,.12);
+    transition:.25s;
+    position:relative;
+}
+
+.notificacion-card:hover{
+    transform:translateY(-4px);
+}
+
+/* ================= ESTADOS ================= */
+.notificacion-card.no-leida{
+    border-left:6px solid #005bf7;
+}
+
+.notificacion-card.leida{
+    opacity:.7;
+}
+
+/* ================= HEADER ================= */
+.notificacion-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.tipo{
+    padding:6px 12px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:800;
+    color:white;
+}
+
+.tipo.stockbajo{ background:#d32f2f; }
+.tipo.pedidopendiente{ background:#f57c00; }
+
+.fecha{
+    font-size:12px;
+    font-weight:600;
+    color:#555;
+}
+
+/* ================= MENSAJE ================= */
+.mensaje{
+    font-size:15px;
+    font-weight:600;
+    margin:12px 0;
+    color:#0b1d3a;
+}
+
+/* ================= DETALLE ================= */
+.detalle{
+    font-size:13px;
+    background:#f0f4ff;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+/* ================= BOTÓN ================= */
+.btn-leer{
+    display:inline-block;
+    padding:8px 14px;
+    background:#0b3d91;
+    color:white;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.btn-leer:hover{
+    background:#003d99;
+}
+
+/* ================= VACÍO ================= */
+.sin-notificaciones{
+    font-size:15px;
+    font-weight:700;
+    color:#555;
+}

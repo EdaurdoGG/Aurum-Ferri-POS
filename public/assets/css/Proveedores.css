@@ -1,0 +1,367 @@
+/* ================= RESET ================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+/* ================= BODY ================= */
+body{
+    background:#fff;
+    color:#0b1d3a;
+}
+
+/* ================= MENÚ ================= */
+.menu {
+    position: fixed;
+    top: 10px;       
+    left: 2px;     
+    width: 64px;
+    height: calc(100vh - 20px); 
+    background: #0b3d91;
+    transition: width .35s ease, left .35s ease, border-radius .35s ease;
+    z-index: 1000;
+    border-radius: 16px; 
+    overflow: hidden;
+    box-shadow: 2px 2px 20px rgba(0,0,0,0.15);
+}
+
+.menu.menu-activo {
+    width: 220px;
+    left: 10px;          
+    top: 10px;
+    height: calc(100vh - 20px); 
+    border-radius: 16px;  
+}
+
+/* ================= LOGO ================= */
+.menu-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+}
+
+.menu-logo {
+    width: 40px;       
+    height: 40px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.menu-title {
+    color: #cce0ff;
+    font-weight: 700;
+    font-size: 16px;
+    display: none; 
+}
+
+.menu.menu-activo .menu-title {
+    display: inline-block; 
+}
+
+/* ================= LINKS ================= */
+.menu li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 48px;
+    padding: 0 14px;
+    color: #cce0ff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all .3s ease;
+    border-radius: 999px;
+    position: relative;
+}
+
+.menu li a img {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    transition: transform .3s ease;
+}
+
+/* ================= ESTADO CERRADO ================= */
+.menu:not(.menu-activo) li a {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    margin: 8px auto;
+    border-radius: 50%;
+}
+
+.menu:not(.menu-activo) li a span {
+    display: none;
+}
+
+/* ================= ACTIVO Y HOVER ================= */
+.menu li a:hover,
+.menu li a.activo {
+    background: rgba(255,255,255,0.18);
+}
+
+/* ================= ACTIVO ABIERTO → PASTILLA ================= */
+.menu.menu-activo li a.activo {
+    border-radius: 999px;
+    width: auto;
+    height: 48px;
+    padding: 0 14px;
+}
+
+/* ================= AJUSTE ICONOS CUANDO ESTÁ ABIERTO ================= */
+.menu.menu-activo li a img {
+    transform: translateX(0);
+}
+
+/* ================= SEPARADOR ================= */
+.menu-separator {
+    height: 1px;
+    background: rgba(255,255,255,0.25);
+    margin: 14px 10px;
+}
+
+.menu li.help {
+    position: absolute;
+    top: 580px; 
+    left: 0;
+    width: 100%;
+}
+
+/* ================= HEADER ================= */
+.page-header{
+    margin-left:60px;
+    padding:30px 35px 15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.page-title{
+    font-size:26px;
+    font-weight:800;
+    color:#0b1d3a;
+}
+
+.header-user{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.notificacion{
+    width:36px;
+    height:36px;
+    background:#cce0ff; 
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+}
+
+.notificacion img{ width:18px; }
+
+.user-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:2px solid #0b3d91;
+    object-fit:cover;
+}
+
+/* ===== USUARIO LOGUEADO ===== */
+.user-info{
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.user-info strong{
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b1d3a;
+}
+
+.user-info span{
+    font-size: 12px;
+    color: #0b3d91;
+    font-weight: 600;
+}
+
+.divider{
+    margin-left:60px;
+    height:1px;
+    background:rgba(11,29,58,.15);
+}
+
+/* ================= CONTENIDO ================= */
+.contenido{
+    margin-left:60px;
+    padding:30px 35px 35px;
+}
+
+/* ================= ACCIONES ================= */
+.acciones-barra{
+    display:flex;
+    gap:14px;
+    margin-bottom:30px;
+}
+
+.accion-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 18px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    color:white;
+    text-decoration:none;
+    cursor:pointer;
+    transition: all 0.3s ease;
+}
+
+.accion-btn img{
+    width:18px;
+    height:18px;
+    transition: all 0.3s ease;
+}
+
+.accion-btn:hover{
+    transform: scale(1.05);
+    background:#062a5c;
+}
+
+.rojo{ background:#0b3d91; }
+
+/* ================= TARJETAS ================= */
+.cards-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    display:flex;
+    position:relative;
+    box-shadow:0 6px 14px rgba(11,29,58,.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover{
+    transform: scale(1.03);
+    box-shadow:0 12px 24px rgba(11,29,58,.2);
+}
+
+.estatus{
+    position:absolute;
+    top:14px;
+    right:14px;
+    padding:4px 10px;
+    font-size:11px;
+    font-weight:700;
+    border-radius:20px;
+    letter-spacing:.4px;
+}
+
+.estatus-activo{
+    background:#5b8ed5;
+    color:white;
+}
+
+.estatus-inactivo{
+    background:#062a5c;
+    color:#cce0ff;
+}
+
+.avatar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    margin-right:20px;
+    border:2px solid #0b3d91;
+}
+
+.card-info h3{
+    font-size:17px;
+    font-weight:700;
+    color:#0b1d3a;
+}
+
+.card-info .rol{
+    font-size:13px;
+    color:#0b3d91;
+    font-weight:600;
+}
+
+.card-info p{
+    font-size:13px;
+    color:#0b1d3a;
+}
+
+.card-actions{
+    position:absolute;
+    bottom:14px;
+    right:14px;
+    display:flex;
+    gap:8px;
+}
+
+.card-actions a{
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    display:grid;
+    place-items:center;
+    background:#cce0ff;
+}
+
+.card-actions img{
+    width:16px;
+}
+
+/* ================= FOOTER ================= */
+footer{
+    margin-left:60px;
+    text-align:center;
+    padding:18px;
+    font-size:13px;
+    color:#0b3d91;
+}
+
+.notificacion{
+    position: relative;
+    width:36px;
+    height:36px;
+    background:#cce0ff;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+/* BURBUJA ROJA */
+.badge{
+    position:absolute;
+    top:-4px;
+    right:-4px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    background:#d32f2f;
+    color:white;
+    font-size:11px;
+    font-weight:800;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 0 2px white;
+}
