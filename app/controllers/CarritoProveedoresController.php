@@ -1,16 +1,16 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
+requireRole(3); // Solo proveedores
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/CarritoProveedoresModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= SEGURIDAD ================= */
-requireRole(3);
+$usuario = cargarUsuarioSesion($conn, 'Proveedor');
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Proveedor';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Proveedor';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 /* ================= CLIENTE ================= */
 $idCliente     = $_SESSION['cliente_seleccionado'] ?? null;

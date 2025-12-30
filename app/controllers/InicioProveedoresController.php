@@ -1,18 +1,18 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
+requireRole(3); // Solo proveedores
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/InicioProveedoresModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= SESIÓN ================= */
-requireRole(3);
+$usuario = cargarUsuarioSesion($conn, 'Proveedor');
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Proveedor';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Proveedor';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
-$conn->query("SET @usuario_actual = $idUsuario");
 
 /* ================= MODEL ================= */
 $model = new ProveedorCatalogoModel($conn);

@@ -1,24 +1,16 @@
 <?php
-session_start();
-
-/* ================= SEGURIDAD ================= */
 require_once __DIR__ . '/../config/session.php';
-requireRole(1);
-
-/* ================= CONEXIÓN ================= */
+requireRole(1); // Solo administradores
 require_once __DIR__ . '/../config/database.php';
-
-/* ================= MODEL ================= */
 require_once __DIR__ . '/../models/RegistroEmpleadosModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Administrador';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$usuario = cargarUsuarioSesion($conn, 'Administrador');
 
-/* ================= TRIGGERS ================= */
-$conn->query("SET @usuario_actual = {$idUsuario}");
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 /* ================= MENSAJES ================= */
 function setMensaje(string $texto, string $tipo = 'success'): void {

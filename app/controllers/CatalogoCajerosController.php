@@ -1,19 +1,16 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/session.php';
-requireRole(2);
-
+requireRole(2); // solo cajero
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/CatalogoCajerosModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Cajero';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Cajero';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$usuario = cargarUsuarioSesion($conn, 'Cajero');
 
-/* ================= TRIGGERS ================= */
-$conn->query("SET @usuario_actual = $idUsuario;");
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 /* ================= RUTAS ================= */
 $rutaServidor = __DIR__ . '/../../public/Imagenes/Productos/';

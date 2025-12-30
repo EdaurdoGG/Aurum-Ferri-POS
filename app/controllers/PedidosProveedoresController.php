@@ -1,24 +1,16 @@
 <?php
-session_start();
-
-/* ================= SEGURIDAD ================= */
 require_once __DIR__ . '/../config/session.php';
-requireRole(3);
-
-/* ================= CONEXIÓN ================= */
+requireRole(3); // Solo proveedores
 require_once __DIR__ . '/../config/database.php';
-
-/* ================= MODEL ================= */
 require_once __DIR__ . '/../models/PedidosProveedoresModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Proveedor';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Proveedor';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$usuario = cargarUsuarioSesion($conn, 'Proveedor');
 
-/* ================= TRIGGER ================= */
-$conn->query("SET @usuario_actual = {$idUsuario}");
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 $model = new PedidosProveedoresModel($conn);
 

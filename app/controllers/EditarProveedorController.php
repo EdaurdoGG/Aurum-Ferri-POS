@@ -1,19 +1,22 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
-requireRole(1);
-
+requireRole(1); // Solo administradores
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/EditarProveedorModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
+
+$usuario = cargarUsuarioSesion($conn, 'Administrador');
+
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 /* MENSAJES */
 function setMensaje(string $msg, string $tipo='success'){
     $_SESSION['mensaje']=$msg;
     $_SESSION['tipo_mensaje']=$tipo;
 }
-
-/* USUARIO AUDITORÍA */
-$idUsuarioSesion = $_SESSION['id'];
-$conn->query("SET @usuario_actual = $idUsuarioSesion");
 
 /* VALIDAR ID */
 $idProveedor = (int)($_GET['idProveedor'] ?? 0);

@@ -25,6 +25,6 @@ function requireRole($rolesPermitidos) {
 function cerrarSesion() {
     session_unset();
     session_destroy();
-    header("Location: /public/Login.php");
+    header("Location: /../public/Login.php");
     exit();
 }

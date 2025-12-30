@@ -1,18 +1,16 @@
 <?php
 require_once __DIR__ . '/../config/session.php';
-requireRole(1);
-
+requireRole(1); // Solo administradores
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/AuditoriaModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Administrador';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$usuario = cargarUsuarioSesion($conn, 'Administrador');
 
-/* ================= TRIGGERS ================= */
-$conn->query("SET @usuario_actual = $idUsuario;");
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
 
 /* ================= FILTROS ================= */
 $fecha  = $_GET['fecha']  ?? '';

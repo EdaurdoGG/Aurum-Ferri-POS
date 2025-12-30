@@ -1,16 +1,17 @@
 <?php
-session_start();
 require_once __DIR__ . '/../config/session.php';
-requireRole(1);
-
+requireRole(1); // Solo administradores
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/NotificacionesModel.php';
+require_once __DIR__ . '/../helpers/UsuarioHelper.php';
 
-/* ================= USUARIO ================= */
-$idUsuario        = $_SESSION['id'];
-$nombreUsuario    = $_SESSION['nombre_completo'] ?? 'Administrador';
-$rolUsuarioNombre = $_SESSION['rol_nombre'] ?? 'Administrador';
-$fotoUsuario      = $_SESSION['foto'] ?? 'Imagenes/Usuarios/default.png';
+$usuario = cargarUsuarioSesion($conn, 'Administrador');
+
+$idUsuario        = $usuario['idUsuario'];
+$nombreUsuario    = $usuario['nombreUsuario'];
+$rolUsuarioNombre = $usuario['rolUsuarioNombre'];
+$fotoUsuario      = $usuario['fotoUsuario'];
+
 
 /* ================= MODEL ================= */
 $model = new NotificacionesModel($conn);
