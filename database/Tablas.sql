@@ -99,7 +99,7 @@ CREATE TABLE Productos (
 CREATE TABLE Carrito (
     idCarrito INT AUTO_INCREMENT PRIMARY KEY,
     Fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    idUsuario INT NOT NULL, -- quien lo está registrando o atendiendo
+    idUsuario INT NOT NULL, 
 
     FOREIGN KEY (idUsuario) REFERENCES Usuarios(idUsuario)
         ON DELETE RESTRICT ON UPDATE CASCADE
@@ -113,7 +113,7 @@ CREATE TABLE DetalleCarrito (
     idCarrito INT NOT NULL,
     idProducto INT NOT NULL,
     Cantidad INT NOT NULL,
-    Precio DECIMAL(10,2) NOT NULL, -- precio por unidad al momento de agregar al carrito
+    Precio DECIMAL(10,2) NOT NULL, 
 
     FOREIGN KEY (idCarrito) REFERENCES Carrito(idCarrito)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -250,13 +250,13 @@ CREATE TABLE HistorialModificaciones (
 -- =========================
 CREATE TABLE Notificaciones (
     idNotificacion INT AUTO_INCREMENT PRIMARY KEY,
-    Tipo ENUM('StockBajo','PedidoPendiente') NOT NULL, -- tipo de notificación
-    idProducto INT NULL,  -- si aplica (ej. StockBajo)
-    idPedido INT NULL,    -- si aplica (ej. PedidoPendiente)
-    Mensaje TEXT NOT NULL, -- descripción de la notificación
+    Tipo ENUM('StockBajo','PedidoPendiente') NOT NULL, 
+    idProducto INT NULL,  
+    idPedido INT NULL,    
+    Mensaje TEXT NOT NULL, 
     Fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    Leida BOOLEAN DEFAULT FALSE, -- para marcar si ya se revisó
-    idUsuario INT NULL, -- opcional: usuario asignado a la notificación
+    Leida BOOLEAN DEFAULT FALSE, 
+    idUsuario INT NULL, 
 
     FOREIGN KEY (idProducto) REFERENCES Productos(idProducto)
         ON DELETE SET NULL ON UPDATE CASCADE,
